@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.expo/
+dist/
+web-build/
+
+# Native Build Outputs
+*.apk
+*.aab
+*.ipa
+*.zip
+*.tar.gz
+
+# Environment Secrets
+.env
+.env.local
+.env.production.local
+*.keystore
+
+# IDE & System Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
