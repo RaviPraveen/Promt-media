@@ -4,7 +4,8 @@ import {
   View,
   StatusBar,
   FlatList,
-  Dimensions,
+  useWindowDimensions,
+  Platform,
   Alert,
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
@@ -12,9 +13,9 @@ import WelcomeScreen1 from './src/screens/WelcomeScreen1';
 import WelcomeScreen2 from './src/screens/WelcomeScreen2';
 import { COLORS } from './src/constants/theme';
 
-const { width } = Dimensions.get('window');
-
 export default function App() {
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const screenWidth = Math.min(windowWidth, 440);
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef(null);
 
@@ -38,7 +39,7 @@ export default function App() {
 
   const handleMomentumScrollEnd = (e) => {
     const offsetX = e.nativeEvent.contentOffset.x;
-    const index = Math.round(offsetX / width);
+    const index = Math.round(offsetX / screenWidth);
     setActiveIndex(index);
   };
 
@@ -65,36 +66,54 @@ export default function App() {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={styles.outerContainer}>
       <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
       <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
 
-      <FlatList
-        ref={flatListRef}
-        data={screens}
-        renderItem={({ item }) => (
-          <View style={{ width, flex: 1 }}>{item.component}</View>
-        )}
-        keyExtractor={(item) => item.key}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        onMomentumScrollEnd={handleMomentumScrollEnd}
-        initialNumToRender={2}
-        getItemLayout={(data, index) => ({
-          length: width,
-          offset: width * index,
-          index,
-        })}
-      />
+      <View style={[styles.mobileWrapper, { width: screenWidth }]}>
+        <FlatList
+          ref={flatListRef}
+          data={screens}
+          renderItem={({ item }) => (
+            <View style={{ width: screenWidth, height: '100%', flex: 1 }}>
+              {item.component}
+            </View>
+          )}
+          style={{ width: screenWidth, height: '100%' }}
+          contentContainerStyle={{ height: '100%' }}
+          keyExtractor={(item) => item.key}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          onMomentumScrollEnd={handleMomentumScrollEnd}
+          initialNumToRender={2}
+          getItemLayout={(data, index) => ({
+            length: screenWidth,
+            offset: screenWidth * index,
+            index,
+          })}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     flex: 1,
+    backgroundColor: '#05060A',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mobileWrapper: {
+    flex: 1,
+    height: '100%',
     backgroundColor: COLORS.background,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
   },
 });

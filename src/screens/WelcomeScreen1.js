@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
   Platform,
   SafeAreaView,
   TouchableOpacity,
@@ -12,8 +11,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import GradientButton from '../components/GradientButton';
 import { COLORS } from '../constants/theme';
-
-const { width, height } = Dimensions.get('window');
 
 export default function WelcomeScreen1({ onNext, activeIndex = 0 }) {
   return (
@@ -48,9 +45,9 @@ export default function WelcomeScreen1({ onNext, activeIndex = 0 }) {
             style={styles.heroImage}
             resizeMode="contain"
           />
-          {/* Bottom blend gradient so image melts into black */}
+          {/* Bottom blend gradient so image melts into pure dark background */}
           <LinearGradient
-            colors={['rgba(7, 8, 13, 0)', 'rgba(7, 8, 13, 0.8)', '#07080D']}
+            colors={['rgba(7, 8, 13, 0)', 'rgba(7, 8, 13, 0.85)', '#07080D']}
             locations={[0, 0.65, 1]}
             style={styles.bottomBlendGradient}
           />
@@ -95,6 +92,7 @@ export default function WelcomeScreen1({ onNext, activeIndex = 0 }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     backgroundColor: COLORS.background,
   },
   topGradient: {
@@ -102,14 +100,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: height * 0.72,
+    height: '70%',
   },
   safeArea: {
     flex: 1,
+    height: '100%',
+    justifyContent: 'space-between',
   },
   header: {
     paddingHorizontal: 22,
-    paddingTop: Platform.OS === 'android' ? 16 : 8,
+    paddingTop: Platform.OS === 'android' ? 16 : 10,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
@@ -125,13 +125,13 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: 'center',
-    marginTop: -8,
-    marginBottom: 6,
+    marginTop: 2,
+    marginBottom: 4,
     zIndex: 10,
   },
   titleText: {
     color: '#FFFFFF',
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '800',
     textAlign: 'center',
     fontFamily: Platform.select({
@@ -146,45 +146,49 @@ const styles = StyleSheet.create({
   },
   heroWrapper: {
     flex: 1,
+    minHeight: 300,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    marginHorizontal: 12,
+    paddingHorizontal: 12,
   },
   heroImage: {
     width: '100%',
     height: '100%',
-    maxHeight: height * 0.48,
+    minHeight: 280,
+    maxWidth: 380,
+    maxHeight: 400,
   },
   bottomBlendGradient: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -2,
-    height: 70,
+    bottom: -1,
+    height: 75,
   },
   bottomSection: {
-    paddingHorizontal: 26,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 32,
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 28,
     alignItems: 'center',
     backgroundColor: COLORS.background,
   },
   descriptionContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
   },
   descHeading: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 3,
+    marginBottom: 4,
     letterSpacing: 0.2,
   },
   descText: {
     color: '#D1D5DB',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13.5,
+    lineHeight: 19,
     textAlign: 'center',
     fontWeight: '400',
   },
@@ -198,14 +202,14 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   pagination: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 4,
+    marginTop: 2,
   },
   dot: {
     width: 7,

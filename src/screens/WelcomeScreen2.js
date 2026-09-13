@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
   Platform,
   SafeAreaView,
   TouchableOpacity,
@@ -13,8 +12,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import GradientButton from '../components/GradientButton';
 import { COLORS } from '../constants/theme';
-
-const { width, height } = Dimensions.get('window');
 
 export default function WelcomeScreen2({ onStart, onBack, activeIndex = 1 }) {
   return (
@@ -54,8 +51,8 @@ export default function WelcomeScreen2({ onStart, onBack, activeIndex = 1 }) {
           />
           {/* Subtle bottom fade to blend into the pure dark background */}
           <LinearGradient
-            colors={['rgba(7, 8, 13, 0)', 'rgba(7, 8, 13, 0.7)', '#07080D']}
-            locations={[0, 0.6, 1]}
+            colors={['rgba(7, 8, 13, 0)', 'rgba(7, 8, 13, 0.75)', '#07080D']}
+            locations={[0, 0.65, 1]}
             style={styles.bottomBlendGradient}
           />
         </View>
@@ -99,14 +96,17 @@ export default function WelcomeScreen2({ onStart, onBack, activeIndex = 1 }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     backgroundColor: COLORS.background,
   },
   safeArea: {
     flex: 1,
+    height: '100%',
+    justifyContent: 'space-between',
   },
   header: {
     position: 'absolute',
-    top: Platform.OS === 'android' ? 16 : 8,
+    top: Platform.OS === 'android' ? 16 : 10,
     left: 20,
     right: 20,
     flexDirection: 'row',
@@ -139,34 +139,36 @@ const styles = StyleSheet.create({
   },
   heroWrapper: {
     flex: 1,
+    minHeight: 320,
+    width: '100%',
     position: 'relative',
     overflow: 'hidden',
   },
   heroImage: {
-    width: width,
+    width: '100%',
     height: '100%',
-    maxHeight: height * 0.62,
+    minHeight: 320,
   },
   bottomBlendGradient: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -2,
-    height: 85,
+    bottom: -1,
+    height: 80,
   },
   bottomSection: {
-    paddingHorizontal: 26,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 32,
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 28,
     alignItems: 'center',
     backgroundColor: COLORS.background,
   },
   descriptionContainer: {
     alignItems: 'center',
-    marginBottom: 26,
+    marginBottom: 22,
   },
   title: {
     color: '#FFFFFF',
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 8,
@@ -174,21 +176,21 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     color: '#D1D5DB',
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 13.5,
+    lineHeight: 20,
     textAlign: 'center',
     fontWeight: '400',
   },
   buttonWrapper: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   pagination: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    marginTop: 4,
+    marginTop: 2,
   },
   dot: {
     width: 7,
