@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -32,7 +32,23 @@ export default function App() {
     setCurrentScreen('auth');
   };
 
-  React.useEffect(() => {
+  // Inject Google Fonts for web
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const fontId = 'prompt-media-google-fonts';
+      if (!document.getElementById(fontId)) {
+        const link = document.createElement('link');
+        link.id = fontId;
+        link.rel = 'stylesheet';
+        link.href =
+          'https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap';
+        document.head.appendChild(link);
+      }
+    }
+  }, []);
+
+  // Keyboard navigation on desktop web
+  useEffect(() => {
     if (Platform.OS === 'web' && currentScreen === 'welcome') {
       const handleKeyDown = (e) => {
         if (e.key === 'ArrowRight') {
@@ -88,7 +104,7 @@ export default function App() {
           />
         </View>
       ) : (
-        <View style={[styles.responsiveWrapper, { width: isDesktop ? Math.min(width * 0.85, 1100) : width }]}>
+        <View style={styles.authWrapper}>
           <AuthScreen
             onBack={() => setCurrentScreen('welcome')}
             onAuthSuccess={() => setCurrentScreen('welcome')}
@@ -104,14 +120,22 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     width: '100%',
-    backgroundColor: '#020305',
+    backgroundColor: '#07080E',
     alignItems: 'center',
     justifyContent: 'center',
   },
   responsiveWrapper: {
     flex: 1,
     height: '100%',
-    backgroundColor: '#08090F',
+    backgroundColor: '#07080E',
     overflow: 'hidden',
+  },
+  authWrapper: {
+    flex: 1,
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#07080E',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

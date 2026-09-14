@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Image,
-  TouchableOpacity,
   Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,64 +12,78 @@ import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen1({ onNext }) {
   const { isMobile, isTablet, isDesktop, width, height } = useResponsiveLayout();
-  const [isHovered, setIsHovered] = useState(false);
 
-  // Desktop / Laptop layout (MacBook Pro 16_ - 1.png)
-  if (isDesktop) {
-    const targetAspect = 1728 / 1117; // ~1.547
-    const currentAspect = width / height;
+  // Desktop & Laptop Split Layout (Screen width >= 900 and landscape)
+  const isLandscapeWide = width >= 900 && width > height;
 
-    let frameWidth, frameHeight;
-    if (currentAspect > targetAspect) {
-      frameHeight = height;
-      frameWidth = height * targetAspect;
-    } else {
-      frameWidth = width;
-      frameHeight = width / targetAspect;
-    }
-
-    // Proportional coordinates matching Figma 1728x1117 button (x: 1130, y: 886, w: 378, h: 71)
-    const btnLeft = frameWidth * (1130 / 1728);
-    const btnTop = frameHeight * (886 / 1117);
-    const btnWidth = frameWidth * (378 / 1728);
-    const btnHeight = frameHeight * (71 / 1117);
-
+  if (isLandscapeWide) {
     return (
-      <View style={styles.desktopOuter}>
-        <View style={[styles.desktopFrame, { width: frameWidth, height: frameHeight }]}>
+      <View style={styles.desktopContainer}>
+        {/* Left 50% Panel: Sky Artwork using Welcomepage.png */}
+        <View style={styles.desktopLeftPanel}>
+          <LinearGradient
+            colors={['#0A83F3', '#1962D6', '#143C88', '#07080E']}
+            locations={[0, 0.35, 0.75, 1]}
+            style={StyleSheet.absoluteFillObject}
+          />
           <Image
-            source={require('../../assets/macbook_1.png')}
-            style={styles.desktopImage}
+            source={require('../../Welcomepage.png')}
+            style={styles.desktopHeroImage}
             resizeMode="contain"
           />
-
-          {/* Interactive button overlay over 'Next >' */}
-          <TouchableOpacity
-            activeOpacity={0.75}
-            onPress={onNext}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            accessibilityRole="button"
-            accessibilityLabel="Next"
-            style={[
-              styles.desktopButtonOverlay,
-              {
-                left: btnLeft,
-                top: btnTop,
-                width: btnWidth,
-                height: btnHeight,
-                borderRadius: btnHeight / 2,
-              },
-              isHovered && styles.desktopButtonHovered,
-            ]}
+          {/* Subtle right gradient blend into the dark right panel */}
+          <LinearGradient
+            colors={['transparent', 'rgba(7, 8, 14, 0.4)', '#07080E']}
+            start={{ x: 0.65, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.desktopRightBlend}
           />
+        </View>
+
+        {/* Right 50% Panel: Real Text & Interactive Button */}
+        <View style={styles.desktopRightPanel}>
+          <View style={styles.desktopContentWrapper}>
+            {/* Top Display Title */}
+            <View style={styles.displayTitleWrapper}>
+              <Text style={styles.displayTitleTop}>Welcome to</Text>
+              <Text style={styles.displayTitleBrand}>Promt Media</Text>
+            </View>
+
+            {/* Description Body */}
+            <View style={styles.desktopTextBody}>
+              <Text style={styles.desktopBodyHeading}>
+                Welcome to Prompt Media
+              </Text>
+              <Text style={styles.desktopBodyLine}>
+                Where AI creativity comes to life.
+              </Text>
+              <Text style={styles.desktopBodyLine}>
+                Discover amazing creations, explore the prompts
+              </Text>
+              <Text style={styles.desktopBodyLine}>
+                behind them, and find inspiration for your next idea.
+              </Text>
+              <Text style={styles.desktopBodyTagline}>
+                Create. Share. Copy. Inspire.
+              </Text>
+            </View>
+
+            {/* Interactive Primary Button */}
+            <View style={styles.desktopButtonWrapper}>
+              <GradientButton
+                title="Next"
+                onPress={onNext}
+                minWidth={280}
+              />
+            </View>
+          </View>
         </View>
       </View>
     );
   }
 
-  // Mobile / Portrait Tablet layout
-  const heroHeight = Math.round(height * 0.62);
+  // Mobile & Portrait Tablet Layout
+  const heroHeight = Math.round(height * 0.58);
   const bottomHeight = height - heroHeight;
 
   return (
@@ -78,18 +91,18 @@ export default function WelcomeScreen1({ onNext }) {
       {/* Top Hero Section */}
       <View style={[styles.heroSection, { height: heroHeight }]}>
         <LinearGradient
-          colors={['#4287F5', '#235CC4', '#0E285C', '#08090F']}
-          locations={[0, 0.35, 0.7, 1]}
+          colors={['#0A83F3', '#1E5BBF', '#07080E']}
+          locations={[0, 0.55, 1]}
           style={StyleSheet.absoluteFillObject}
         />
         <Image
-          source={require('../../welcome_hero.png')}
+          source={require('../../Welcomepage.png')}
           style={styles.heroImage}
-          resizeMode={isMobile ? 'cover' : 'contain'}
+          resizeMode="contain"
         />
         <LinearGradient
-          colors={['transparent', 'rgba(8, 9, 15, 0.45)', '#08090F']}
-          locations={[0, 0.75, 1]}
+          colors={['transparent', 'rgba(7, 8, 14, 0.6)', '#07080E']}
+          locations={[0, 0.7, 1]}
           style={styles.bottomBlend}
         />
       </View>
@@ -118,7 +131,7 @@ export default function WelcomeScreen1({ onNext }) {
           <GradientButton
             title="Next"
             onPress={onNext}
-            minWidth={isTablet || isDesktop ? 200 : 165}
+            minWidth={isTablet ? 220 : 180}
           />
         </View>
       </View>
@@ -127,59 +140,121 @@ export default function WelcomeScreen1({ onNext }) {
 }
 
 const styles = StyleSheet.create({
-  // Desktop layout styles
-  desktopOuter: {
+  // Desktop & Laptop Layout Styles
+  desktopContainer: {
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundColor: '#0D111B',
+    flexDirection: 'row',
+    backgroundColor: '#07080E',
+    overflow: 'hidden',
+  },
+  desktopLeftPanel: {
+    width: '50%',
+    height: '100%',
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  desktopFrame: {
-    position: 'relative',
-    backgroundColor: '#0D111B',
+  desktopHeroImage: {
+    width: '88%',
+    height: '88%',
+    position: 'absolute',
+    bottom: 0,
+  },
+  desktopRightBlend: {
+    position: 'absolute',
+    right: -1,
+    top: 0,
+    bottom: 0,
+    width: 140,
+  },
+  desktopRightPanel: {
+    width: '50%',
+    height: '100%',
+    backgroundColor: '#07080E',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 48,
   },
-  desktopImage: {
+  desktopContentWrapper: {
     width: '100%',
-    height: '100%',
+    maxWidth: 580,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 40,
+    height: '82%',
   },
-  desktopButtonOverlay: {
-    position: 'absolute',
-    cursor: 'pointer',
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: 'transparent',
+  displayTitleWrapper: {
+    alignItems: 'center',
   },
-  desktopButtonHovered: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(255, 255, 255, 0.35)',
-    shadowColor: '#EC4899',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 15,
+  displayTitleTop: {
+    color: '#FFFFFF',
+    fontSize: 44,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+  },
+  displayTitleBrand: {
+    color: '#FFFFFF',
+    fontSize: 52,
+    fontWeight: '900',
+    letterSpacing: 2,
+    marginTop: 4,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+  },
+  desktopTextBody: {
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  desktopBodyHeading: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 8,
+    letterSpacing: 0.3,
+  },
+  desktopBodyLine: {
+    color: '#D1D5DB',
+    fontSize: 16.5,
+    lineHeight: 26,
+    textAlign: 'center',
+    fontWeight: '400',
+  },
+  desktopBodyTagline: {
+    color: '#FFFFFF',
+    fontSize: 17.5,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginTop: 10,
+    letterSpacing: 0.5,
+  },
+  desktopButtonWrapper: {
+    alignItems: 'center',
+    width: '100%',
   },
 
-  // Mobile layout styles
+  // Mobile & Tablet Layout Styles
   container: {
     flex: 1,
     height: '100%',
     width: '100%',
-    backgroundColor: '#08090F',
+    backgroundColor: '#07080E',
   },
   heroSection: {
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   heroImage: {
-    width: '100%',
-    height: '100%',
+    width: '92%',
+    height: '92%',
   },
   bottomBlend: {
     position: 'absolute',
@@ -194,7 +269,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingBottom: Platform.OS === 'ios' ? 24 : 16,
-    backgroundColor: '#08090F',
+    backgroundColor: '#07080E',
   },
   textContainer: {
     alignItems: 'center',
@@ -202,16 +277,17 @@ const styles = StyleSheet.create({
   },
   headingText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
-    lineHeight: 21,
+    lineHeight: 22,
     letterSpacing: 0.2,
+    marginBottom: 4,
   },
   headingTextLarge: {
-    fontSize: 18,
-    lineHeight: 25,
-    marginBottom: 2,
+    fontSize: 19,
+    lineHeight: 26,
+    marginBottom: 6,
   },
   bodyText: {
     color: '#D1D5DB',
