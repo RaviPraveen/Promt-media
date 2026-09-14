@@ -23,7 +23,29 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+
+# Automated Test Artifacts & Screenshots (DO NOT PUSH TO GIT)
 .playwright-mcp/
-screen*.png
-login*.png
-register*.png
+screenshot*
+screen*
+test*
+login*
+register*
+preview*
+temp*
+*.webm
+*.webp
+*.mov
+*.mp4
+
+# Retain Core App Artwork & Mockup Assets
+!logo.png
+!welcome_hero.png
+!2ndwelcomepage.png
+!Welcomepage.png
+!Group 17.png
+!iPhone 16 & 17 Pro - 1.png
+!iPhone 16 & 17 Pro - 3.png
+!iPhone 16 & 17 Pro - 5.png
+!assets/**
+

@@ -1,15 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../constants/theme';
 
-export default function GradientButton({ title, onPress, style, textStyle, minWidth = 190 }) {
+export default function GradientButton({
+  title,
+  onPress,
+  style,
+  textStyle,
+  minWidth = 190,
+  iconName = 'chevron-forward',
+  showIcon = true,
+  loading = false,
+  disabled = false,
+}) {
   return (
     <TouchableOpacity
       activeOpacity={0.82}
       onPress={onPress}
-      style={[styles.wrapper, { minWidth }, style]}
+      disabled={disabled || loading}
+      style={[
+        styles.wrapper,
+        { minWidth },
+        (disabled || loading) && styles.disabled,
+        style,
+      ]}
     >
       <LinearGradient
         colors={['#2997FF', '#9333EA', '#FF2A85']}
@@ -17,8 +32,21 @@ export default function GradientButton({ title, onPress, style, textStyle, minWi
         end={{ x: 1, y: 0.5 }}
         style={styles.gradient}
       >
-        <Text style={[styles.text, textStyle]}>{title}</Text>
-        <Ionicons name="chevron-forward" size={20} color="#000000" style={styles.icon} />
+        {loading ? (
+          <ActivityIndicator color="#000000" size="small" />
+        ) : (
+          <>
+            <Text style={[styles.text, textStyle]}>{title}</Text>
+            {showIcon && (
+              <Ionicons
+                name={iconName}
+                size={19}
+                color="#000000"
+                style={styles.icon}
+              />
+            )}
+          </>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -29,8 +57,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     shadowColor: '#C026D3',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
     elevation: 8,
   },
   gradient: {
@@ -38,17 +66,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    paddingHorizontal: 30,
+    paddingHorizontal: 28,
     borderRadius: 30,
+    height: 52,
+  },
+  disabled: {
+    opacity: 0.65,
   },
   text: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 16.5,
+    fontWeight: '800',
     color: '#000000',
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
   },
   icon: {
     marginLeft: 6,
-    strokeWidth: 3,
   },
 });

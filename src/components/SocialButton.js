@@ -9,14 +9,19 @@ export default function SocialButton({ provider, onPress, title, style }) {
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={onPress}
-      style={[styles.button, style]}
+      style={[
+        styles.button,
+        isGoogle ? styles.googleButton : styles.appleButton,
+        style,
+      ]}
     >
-      <Ionicons
-        name={isGoogle ? 'logo-google' : 'logo-apple'}
-        size={19}
-        color={isGoogle ? '#EA4335' : '#FFFFFF'}
-        style={styles.icon}
-      />
+      <View style={styles.iconWrapper}>
+        <Ionicons
+          name={isGoogle ? 'logo-google' : 'logo-apple'}
+          size={19}
+          color={isGoogle ? '#EA4335' : '#FFFFFF'}
+        />
+      </View>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
@@ -27,15 +32,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    height: 50,
     borderRadius: 14,
-    height: 48,
     paddingHorizontal: 16,
-    marginBottom: 12,
+    marginBottom: 11,
+    borderWidth: 1,
   },
-  icon: {
+  googleButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  appleButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  iconWrapper: {
+    width: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
   },
   text: {

@@ -74,7 +74,7 @@ export default function App() {
           />
         </View>
       ) : (
-        <View style={[styles.responsiveWrapper, { width: isDesktop ? Math.min(width * 0.45, 520) : width }]}>
+        <View style={[styles.responsiveWrapper, { width: isDesktop ? Math.min(width * 0.85, 1100) : width }]}>
           <AuthScreen
             onBack={() => setCurrentScreen('welcome')}
             onAuthSuccess={() => setCurrentScreen('welcome')}
