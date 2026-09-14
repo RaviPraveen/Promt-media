@@ -13,7 +13,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import GlassInput from '../components/GlassInput';
-import SocialButton from '../components/SocialButton';
 import GradientButton from '../components/GradientButton';
 import { useResponsiveLayout } from '../constants/responsive';
 
@@ -74,14 +73,6 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
         );
       }, 700);
     }
-  };
-
-  const handleSocialAuth = (provider) => {
-    Alert.alert(
-      `${provider} Sign In`,
-      `Connecting to ${provider} authentication...`,
-      [{ text: 'OK' }]
-    );
   };
 
   const showDesktopSplit = isDesktop;
@@ -331,29 +322,6 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                     style={{ width: '100%' }}
                   />
                 </View>
-              </View>
-
-              {/* Divider (Placed AFTER Primary Action) */}
-              <View style={styles.dividerRow}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
-                <View style={styles.dividerLine} />
-              </View>
-
-              {/* Social Logins PLACED AT THE BOTTOM ("IN DOWN") */}
-              <View style={styles.socialRow}>
-                <SocialButton
-                  provider="apple"
-                  title="Apple"
-                  onPress={() => handleSocialAuth('Apple')}
-                  style={styles.socialHalfButton}
-                />
-                <SocialButton
-                  provider="google"
-                  title="Google"
-                  onPress={() => handleSocialAuth('Google')}
-                  style={styles.socialHalfButton}
-                />
               </View>
 
               {/* Switch Mode Footer */}
@@ -696,38 +664,11 @@ const styles = StyleSheet.create({
   submitWrapper: {
     marginTop: 4,
   },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 18,
-    gap: 12,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  dividerText: {
-    color: '#64748B',
-    fontSize: 10.5,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-  },
-  socialRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
-  },
-  socialHalfButton: {
-    flex: 1,
-    marginBottom: 0,
-  },
   footerPrompt: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 4,
+    marginTop: 18,
   },
   footerText: {
     color: '#94A3B8',
