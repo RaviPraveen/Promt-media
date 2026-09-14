@@ -90,19 +90,19 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
     <View style={styles.container}>
       {/* Radiant atmospheric background glow orbs */}
       <LinearGradient
-        colors={['rgba(41, 151, 255, 0.18)', 'transparent']}
+        colors={['rgba(41, 151, 255, 0.16)', 'transparent']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0.8, y: 0.6 }}
         style={styles.ambientGlowTopLeft}
       />
       <LinearGradient
-        colors={['rgba(147, 51, 234, 0.15)', 'transparent']}
+        colors={['rgba(147, 51, 234, 0.14)', 'transparent']}
         start={{ x: 1, y: 0.2 }}
         end={{ x: 0.2, y: 0.8 }}
         style={styles.ambientGlowRight}
       />
       <LinearGradient
-        colors={['rgba(255, 42, 133, 0.12)', 'transparent']}
+        colors={['rgba(255, 42, 133, 0.10)', 'transparent']}
         start={{ x: 0.2, y: 1 }}
         end={{ x: 0.8, y: 0.3 }}
         style={styles.ambientGlowBottomLeft}
@@ -120,10 +120,10 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* Main Layout Container (Split on Desktop, Centered card on Tablet, Edge-to-edge on Mobile) */}
+          {/* Main Layout Container */}
           <View style={[styles.mainLayout, showDesktopSplit && styles.desktopSplitLayout]}>
             
-            {/* Desktop Left Showcase Panel (Featured Art & Prompt Inspiration) */}
+            {/* Desktop Left Showcase Panel */}
             {showDesktopSplit && (
               <View style={styles.desktopShowcasePanel}>
                 <LinearGradient
@@ -135,7 +135,6 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                       <Ionicons name="sparkles" size={13} color="#38BDF8" />
                       <Text style={styles.showcaseBadgeText}>COMMUNITY SPOTLIGHT</Text>
                     </View>
-                    <Text style={styles.showcaseTag}>v1.0.0</Text>
                   </View>
 
                   <View style={styles.showcaseImageContainer}>
@@ -179,7 +178,7 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
               </View>
             )}
 
-            {/* Auth Form Card */}
+            {/* Native Mobile / Tablet Auth Card */}
             <View
               style={[
                 styles.card,
@@ -213,74 +212,23 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                   </View>
                 </View>
 
-                <View style={styles.badgeVersion}>
-                  <Text style={styles.versionText}>v1.0.0</Text>
-                </View>
+                {/* Symmetrical placeholder */}
+                <View style={styles.placeholderSpacer} />
               </View>
 
-              {/* Title & Value Statement */}
+              {/* Title & Subtitle */}
               <View style={styles.titleSection}>
                 <Text style={styles.title}>
-                  {isSignUp ? 'Create Your Account' : 'Welcome Back'}
+                  {isSignUp ? 'Create Account' : 'Welcome Back'}
                 </Text>
                 <Text style={styles.subtitle}>
                   {isSignUp
-                    ? 'Join a thriving network of AI creators. Copy, generate, and showcase prompt recipes.'
-                    : 'Sign in to access your saved prompts, recipe collections, and creator feed.'}
+                    ? 'Join a thriving network of AI creators to copy & share prompt recipes.'
+                    : 'Sign in to access your saved prompts, collections, and feed.'}
                 </Text>
               </View>
 
-              {/* Segmented Switcher (Sign In vs Create Account) */}
-              <View style={styles.tabContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => {
-                    setIsSignUp(false);
-                    setErrors({});
-                  }}
-                  style={[styles.tabButton, !isSignUp && styles.tabButtonActive]}
-                >
-                  <Text style={[styles.tabText, !isSignUp && styles.tabTextActive]}>
-                    Sign In
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => {
-                    setIsSignUp(true);
-                    setErrors({});
-                  }}
-                  style={[styles.tabButton, isSignUp && styles.tabButtonActive]}
-                >
-                  <Text style={[styles.tabText, isSignUp && styles.tabTextActive]}>
-                    Create Account
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Fast Social Single-Sign-On */}
-              <View style={styles.socialSection}>
-                <SocialButton
-                  provider="apple"
-                  title={isSignUp ? 'Sign up with Apple' : 'Continue with Apple'}
-                  onPress={() => handleSocialAuth('Apple')}
-                />
-                <SocialButton
-                  provider="google"
-                  title={isSignUp ? 'Sign up with Google' : 'Continue with Google'}
-                  onPress={() => handleSocialAuth('Google')}
-                />
-              </View>
-
-              {/* Hairline Divider */}
-              <View style={styles.dividerRow}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
-                <View style={styles.dividerLine} />
-              </View>
-
-              {/* Form Fields */}
+              {/* Form Fields (Primary Focus at the Top) */}
               <View style={styles.formSection}>
                 {isSignUp && (
                   <>
@@ -299,7 +247,7 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                       value={username}
                       onChangeText={setUsername}
                       iconName="at-outline"
-                      hint="Unique handle for your prompts"
+                      hint="Unique handle"
                       error={errors.username}
                     />
                   </>
@@ -317,7 +265,7 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
 
                 <GlassInput
                   label="Password"
-                  placeholder={isSignUp ? 'Create a strong password (6+ chars)' : 'Enter your password'}
+                  placeholder={isSignUp ? 'Create a password (6+ chars)' : 'Enter your password'}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -346,7 +294,7 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                       style={styles.rememberMeRow}
                     >
                       <View style={[styles.checkbox, rememberMe && styles.checkboxActive]}>
-                        {rememberMe && <Ionicons name="checkmark" size={13} color="#000000" />}
+                        {rememberMe && <Ionicons name="checkmark" size={12} color="#000000" />}
                       </View>
                       <Text style={styles.rememberMeText}>Remember me</Text>
                     </TouchableOpacity>
@@ -355,8 +303,8 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                       activeOpacity={0.7}
                       onPress={() =>
                         Alert.alert(
-                          'Password Reset',
-                          'Please enter your email to receive instructions to reset your password.'
+                          'Reset Password',
+                          'Please enter your email to receive password reset instructions.'
                         )
                       }
                     >
@@ -374,7 +322,7 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                   </View>
                 )}
 
-                {/* High Impact Primary CTA Button */}
+                {/* Primary Action Button */}
                 <View style={styles.submitWrapper}>
                   <GradientButton
                     title={isSignUp ? 'CREATE ACCOUNT' : 'SIGN IN'}
@@ -385,10 +333,33 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                 </View>
               </View>
 
-              {/* Mode Toggle Footer */}
+              {/* Divider (Placed AFTER Primary Action) */}
+              <View style={styles.dividerRow}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              {/* Social Logins PLACED AT THE BOTTOM ("IN DOWN") */}
+              <View style={styles.socialRow}>
+                <SocialButton
+                  provider="apple"
+                  title="Apple"
+                  onPress={() => handleSocialAuth('Apple')}
+                  style={styles.socialHalfButton}
+                />
+                <SocialButton
+                  provider="google"
+                  title="Google"
+                  onPress={() => handleSocialAuth('Google')}
+                  style={styles.socialHalfButton}
+                />
+              </View>
+
+              {/* Switch Mode Footer */}
               <View style={styles.footerPrompt}>
                 <Text style={styles.footerText}>
-                  {isSignUp ? 'Already have an account?' : "Don't have an account yet?"}
+                  {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                 </Text>
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -398,9 +369,14 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
                   }}
                 >
                   <Text style={styles.footerActionText}>
-                    {isSignUp ? ' Sign In' : ' Create Free Account'}
+                    {isSignUp ? ' Sign In' : ' Sign Up'}
                   </Text>
                 </TouchableOpacity>
+              </View>
+
+              {/* Subtle App Version at the very bottom */}
+              <View style={styles.bottomVersionRow}>
+                <Text style={styles.bottomVersionText}>Prompt Media • v1.0.0</Text>
               </View>
             </View>
           </View>
@@ -446,8 +422,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'ios' ? 52 : 28,
-    paddingBottom: 40,
+    paddingTop: Platform.OS === 'ios' ? 50 : 26,
+    paddingBottom: 32,
     flexGrow: 1,
   },
   scrollContentCentered: {
@@ -500,11 +476,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.5,
-  },
-  showcaseTag: {
-    color: '#64748B',
-    fontSize: 12,
-    fontWeight: '600',
   },
   showcaseImageContainer: {
     width: '100%',
@@ -609,9 +580,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: 'rgba(255, 255, 255, 0.07)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
@@ -650,25 +621,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.8,
   },
-  badgeVersion: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  versionText: {
-    color: '#64748B',
-    fontSize: 11,
-    fontWeight: '600',
+  placeholderSpacer: {
+    width: 38,
   },
   titleSection: {
     marginBottom: 20,
   },
   title: {
     color: '#FFFFFF',
-    fontSize: 23,
+    fontSize: 24,
     fontWeight: '800',
     letterSpacing: 0.3,
     marginBottom: 6,
@@ -678,63 +639,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
   },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.07)',
-  },
-  tabButton: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderRadius: 11,
-  },
-  tabButtonActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  tabText: {
-    color: '#64748B',
-    fontSize: 13.5,
-    fontWeight: '600',
-  },
-  tabTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  socialSection: {
-    marginBottom: 12,
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-    gap: 12,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  dividerText: {
-    color: '#64748B',
-    fontSize: 10.5,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-  },
   formSection: {
-    marginBottom: 14,
+    marginBottom: 10,
   },
   optionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 18,
     marginTop: 2,
   },
   rememberMeRow: {
@@ -743,8 +655,8 @@ const styles = StyleSheet.create({
     gap: 7,
   },
   checkbox: {
-    width: 18,
-    height: 18,
+    width: 17,
+    height: 17,
     borderRadius: 5,
     borderWidth: 1.5,
     borderColor: '#475569',
@@ -784,11 +696,38 @@ const styles = StyleSheet.create({
   submitWrapper: {
     marginTop: 4,
   },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 18,
+    gap: 12,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  dividerText: {
+    color: '#64748B',
+    fontSize: 10.5,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 16,
+  },
+  socialHalfButton: {
+    flex: 1,
+    marginBottom: 0,
+  },
   footerPrompt: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 4,
   },
   footerText: {
     color: '#94A3B8',
@@ -798,5 +737,15 @@ const styles = StyleSheet.create({
     color: '#EC4899',
     fontSize: 13,
     fontWeight: '700',
+  },
+  bottomVersionRow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 18,
+  },
+  bottomVersionText: {
+    color: '#475569',
+    fontSize: 11,
+    fontWeight: '500',
   },
 });
