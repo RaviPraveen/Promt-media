@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -13,8 +13,76 @@ import GradientButton from '../components/GradientButton';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen2({ onStart, onBack }) {
-  const { isMobile, isTablet, isDesktop, height } = useResponsiveLayout();
-  // Hero section takes 62% of screen height; bottom section takes 38%
+  const { isMobile, isTablet, isDesktop, width, height } = useResponsiveLayout();
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Desktop / Laptop layout (MacBook Pro 16_ - 2.png)
+  if (isDesktop) {
+    const targetAspect = 1728 / 1117; // ~1.547
+    const currentAspect = width / height;
+
+    let frameWidth, frameHeight;
+    if (currentAspect > targetAspect) {
+      frameHeight = height;
+      frameWidth = height * targetAspect;
+    } else {
+      frameWidth = width;
+      frameHeight = width / targetAspect;
+    }
+
+    // Proportional coordinates matching Figma 1728x1117 button (x: 1130, y: 886, w: 378, h: 71)
+    const btnLeft = frameWidth * (1130 / 1728);
+    const btnTop = frameHeight * (886 / 1117);
+    const btnWidth = frameWidth * (378 / 1728);
+    const btnHeight = frameHeight * (71 / 1117);
+
+    return (
+      <View style={styles.desktopOuter}>
+        <View style={[styles.desktopFrame, { width: frameWidth, height: frameHeight }]}>
+          <Image
+            source={require('../../assets/macbook_2.png')}
+            style={styles.desktopImage}
+            resizeMode="contain"
+          />
+
+          {/* Desktop Back button */}
+          {onBack && (
+            <TouchableOpacity
+              activeOpacity={0.75}
+              onPress={onBack}
+              style={styles.desktopBackButton}
+            >
+              <Ionicons name="arrow-back" size={18} color="#FFFFFF" />
+              <Text style={styles.desktopBackText}>Back</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Interactive button overlay over 'Next >' */}
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={onStart}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Next"
+            style={[
+              styles.desktopButtonOverlay,
+              {
+                left: btnLeft,
+                top: btnTop,
+                width: btnWidth,
+                height: btnHeight,
+                borderRadius: btnHeight / 2,
+              },
+              isHovered && styles.desktopButtonHovered,
+            ]}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  // Mobile / Portrait Tablet layout
   const heroHeight = Math.round(height * 0.62);
   const bottomHeight = height - heroHeight;
 
@@ -84,6 +152,64 @@ export default function WelcomeScreen2({ onStart, onBack }) {
 }
 
 const styles = StyleSheet.create({
+  // Desktop layout styles
+  desktopOuter: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#0D111B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  desktopFrame: {
+    position: 'relative',
+    backgroundColor: '#0D111B',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  desktopImage: {
+    width: '100%',
+    height: '100%',
+  },
+  desktopBackButton: {
+    position: 'absolute',
+    top: 24,
+    left: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    backgroundColor: 'rgba(20, 24, 38, 0.75)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    cursor: 'pointer',
+    zIndex: 10,
+  },
+  desktopBackText: {
+    color: '#FFFFFF',
+    fontSize: 13.5,
+    fontWeight: '600',
+  },
+  desktopButtonOverlay: {
+    position: 'absolute',
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  desktopButtonHovered: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.35)',
+    shadowColor: '#EC4899',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 15,
+  },
+
+  // Mobile layout styles
   container: {
     flex: 1,
     height: '100%',

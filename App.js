@@ -4,6 +4,7 @@ import {
   View,
   StatusBar,
   FlatList,
+  Platform,
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import WelcomeScreen1 from './src/screens/WelcomeScreen1';
@@ -16,9 +17,8 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState('welcome'); // 'welcome' | 'auth'
   const flatListRef = useRef(null);
 
-  // Full 100% width on Mobile and Tablet (iPhone 16 Pro Max, iPad Air, etc.)
-  // On large desktop displays (>1024px), center within an elegant mobile/tablet frame
-  const activeWidth = isDesktop ? Math.min(width * 0.42, 500) : width;
+  // Full 100% width on all devices (mobile, tablet, desktop)
+  const activeWidth = width;
 
   const goToNextPage = () => {
     flatListRef.current?.scrollToIndex({ index: 1, animated: true });
@@ -31,6 +31,20 @@ export default function App() {
   const handleStart = () => {
     setCurrentScreen('auth');
   };
+
+  React.useEffect(() => {
+    if (Platform.OS === 'web' && currentScreen === 'welcome') {
+      const handleKeyDown = (e) => {
+        if (e.key === 'ArrowRight') {
+          goToNextPage();
+        } else if (e.key === 'ArrowLeft') {
+          goToPrevPage();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [currentScreen]);
 
   const screens = [
     {
