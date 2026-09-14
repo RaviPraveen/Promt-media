@@ -26,17 +26,26 @@ Thumbs.db
 
 # Automated Test Artifacts & Screenshots (DO NOT PUSH TO GIT)
 .playwright-mcp/
-screenshot*
-screen*
-test*
-login*
-register*
-preview*
-temp*
+screenshot*.png
+screenshot*.jpg
+screen_*.png
+screen-*.png
+screen1*.png
+screen2*.png
+test_*.png
+login_*.png
+register_*.png
+preview_*.png
+temp_*.png
 *.webm
 *.webp
 *.mov
 *.mp4
+
+# Retain Source Code Folders
+!src/**
+!src/screens/**
+
 
 # Retain Core App Artwork & Mockup Assets
 !logo.png
