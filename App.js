@@ -1,20 +1,24 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
   StatusBar,
   FlatList,
-  useWindowDimensions,
-  Alert,
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import WelcomeScreen1 from './src/screens/WelcomeScreen1';
 import WelcomeScreen2 from './src/screens/WelcomeScreen2';
+import AuthScreen from './src/screens/AuthScreen';
+import { useResponsiveLayout } from './src/constants/responsive';
 
 export default function App() {
-  const { width: windowWidth } = useWindowDimensions();
-  const screenWidth = Math.min(windowWidth, 414);
+  const { width, height, isDesktop } = useResponsiveLayout();
+  const [currentScreen, setCurrentScreen] = useState('welcome'); // 'welcome' | 'auth'
   const flatListRef = useRef(null);
+
+  // Full 100% width on Mobile and Tablet (iPhone 16 Pro Max, iPad Air, etc.)
+  // On large desktop displays (>1024px), center within an elegant mobile/tablet frame
+  const activeWidth = isDesktop ? Math.min(width * 0.42, 500) : width;
 
   const goToNextPage = () => {
     flatListRef.current?.scrollToIndex({ index: 1, animated: true });
@@ -25,11 +29,7 @@ export default function App() {
   };
 
   const handleStart = () => {
-    Alert.alert(
-      'Prompt Media',
-      "Welcome to Prompt Media! You're all set to create, share, and discover AI prompts.",
-      [{ text: "Let's Go!", style: 'default' }]
-    );
+    setCurrentScreen('auth');
   };
 
   const screens = [
@@ -48,30 +48,39 @@ export default function App() {
       <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
       <StatusBar barStyle="light-content" backgroundColor="#08090F" />
 
-      <View style={[styles.mobileWrapper, { width: screenWidth }]}>
-        <FlatList
-          ref={flatListRef}
-          data={screens}
-          renderItem={({ item }) => (
-            <View style={{ width: screenWidth, height: '100%' }}>
-              {item.component}
-            </View>
-          )}
-          style={{ width: screenWidth, height: '100%' }}
-          contentContainerStyle={{ height: '100%' }}
-          keyExtractor={(item) => item.key}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          initialNumToRender={2}
-          getItemLayout={(data, index) => ({
-            length: screenWidth,
-            offset: screenWidth * index,
-            index,
-          })}
-        />
-      </View>
+      {currentScreen === 'welcome' ? (
+        <View style={[styles.responsiveWrapper, { width: activeWidth }]}>
+          <FlatList
+            ref={flatListRef}
+            data={screens}
+            renderItem={({ item }) => (
+              <View style={{ width: activeWidth, height: '100%' }}>
+                {item.component}
+              </View>
+            )}
+            style={{ width: activeWidth, height: '100%' }}
+            contentContainerStyle={{ height: '100%' }}
+            keyExtractor={(item) => item.key}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            initialNumToRender={2}
+            getItemLayout={(data, index) => ({
+              length: activeWidth,
+              offset: activeWidth * index,
+              index,
+            })}
+          />
+        </View>
+      ) : (
+        <View style={[styles.responsiveWrapper, { width: isDesktop ? Math.min(width * 0.45, 520) : width }]}>
+          <AuthScreen
+            onBack={() => setCurrentScreen('welcome')}
+            onAuthSuccess={() => setCurrentScreen('welcome')}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -79,11 +88,13 @@ export default function App() {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
+    height: '100%',
+    width: '100%',
     backgroundColor: '#020305',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mobileWrapper: {
+  responsiveWrapper: {
     flex: 1,
     height: '100%',
     backgroundColor: '#08090F',

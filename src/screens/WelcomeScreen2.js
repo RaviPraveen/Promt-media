@@ -10,16 +10,27 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import GradientButton from '../components/GradientButton';
+import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen2({ onStart, onBack }) {
+  const { isMobile, isTablet, isDesktop, height } = useResponsiveLayout();
+  // Hero section takes 62% of screen height; bottom section takes 38%
+  const heroHeight = Math.round(height * 0.62);
+  const bottomHeight = height - heroHeight;
+
   return (
     <View style={styles.container}>
-      {/* Top Hero Section (Full-Width Edge-to-Edge matching Group 17 mockup) */}
-      <View style={styles.heroSection}>
+      {/* Top Hero Section */}
+      <View style={[styles.heroSection, { height: heroHeight }]}>
+        <LinearGradient
+          colors={['#5A98DF', '#3A70B8', '#08090F']}
+          locations={[0, 0.5, 1]}
+          style={StyleSheet.absoluteFillObject}
+        />
         <Image
           source={require('../../2ndwelcomepage.png')}
           style={styles.heroImage}
-          resizeMode="cover"
+          resizeMode={isMobile ? 'cover' : 'contain'}
         />
 
         {/* Back navigation button overlay */}
@@ -33,34 +44,38 @@ export default function WelcomeScreen2({ onStart, onBack }) {
           </TouchableOpacity>
         )}
 
-        {/* Soft bottom blend to seamlessly integrate with dark background */}
         <LinearGradient
-          colors={['transparent', 'rgba(8, 9, 15, 0.6)', '#08090F']}
-          locations={[0, 0.7, 1]}
+          colors={['transparent', 'rgba(8, 9, 15, 0.45)', '#08090F']}
+          locations={[0, 0.75, 1]}
           style={styles.bottomBlend}
         />
       </View>
 
       {/* Bottom Content Section */}
-      <View style={styles.bottomSection}>
+      <View style={[styles.bottomSection, { height: bottomHeight }]}>
         <View style={styles.textContainer}>
-          <Text style={styles.headingText}>Share Your Creativity</Text>
-          <Text style={styles.bodyText}>
+          <Text style={[styles.headingText, (isTablet || isDesktop) && styles.headingTextLarge]}>
+            Share Your Creativity
+          </Text>
+          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
             Post your AI-generated images with the prompts
           </Text>
-          <Text style={styles.bodyText}>behind them.</Text>
-          <Text style={styles.bodyText}>
+          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+            behind them.
+          </Text>
+          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
             Get likes, gain followers, connect with other creators
           </Text>
-          <Text style={styles.bodyText}>and inspire the community.</Text>
+          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+            and inspire the community.
+          </Text>
         </View>
 
-        {/* Action Button */}
         <View style={styles.buttonContainer}>
           <GradientButton
             title="Let's Start"
             onPress={onStart}
-            minWidth={200}
+            minWidth={isTablet || isDesktop ? 230 : 200}
           />
         </View>
       </View>
@@ -72,13 +87,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
+    width: '100%',
     backgroundColor: '#08090F',
   },
   heroSection: {
     width: '100%',
-    aspectRatio: 402 / 592,
     position: 'relative',
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   heroImage: {
     width: '100%',
@@ -88,9 +105,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Platform.OS === 'android' ? 24 : 44,
     right: 20,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: 'rgba(20, 22, 32, 0.65)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.15)',
@@ -103,18 +120,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: -1,
-    height: 60,
+    height: 70,
   },
   bottomSection: {
-    flex: 1,
+    width: '100%',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === 'ios' ? 36 : 28,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 16,
     backgroundColor: '#08090F',
   },
   textContainer: {
     alignItems: 'center',
+    maxWidth: 520,
   },
   headingText: {
     color: '#FFFFFF',
@@ -125,6 +143,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     marginBottom: 4,
   },
+  headingTextLarge: {
+    fontSize: 20,
+    lineHeight: 28,
+    marginBottom: 6,
+  },
   bodyText: {
     color: '#D1D5DB',
     fontSize: 13.5,
@@ -132,9 +155,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '400',
   },
+  bodyTextLarge: {
+    fontSize: 15.5,
+    lineHeight: 23,
+  },
   buttonContainer: {
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 12,
   },
 });

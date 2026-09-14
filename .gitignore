@@ -23,3 +23,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+.playwright-mcp/
+screen*.png
+login*.png
+register*.png
