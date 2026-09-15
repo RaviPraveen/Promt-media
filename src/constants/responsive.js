@@ -6,7 +6,9 @@ export const BREAKPOINTS = {
 };
 
 export function useResponsiveLayout() {
-  const { width, height } = useWindowDimensions();
+  const windowDimensions = useWindowDimensions();
+  const width = windowDimensions.width || 360;
+  const height = windowDimensions.height || 700;
 
   const isMobile = width < BREAKPOINTS.mobile;
   const isTablet = width >= BREAKPOINTS.mobile && width <= BREAKPOINTS.tablet;

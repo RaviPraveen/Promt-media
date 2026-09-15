@@ -11,11 +11,13 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GlassInput from '../components/GlassInput';
 import GradientButton from '../components/GradientButton';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function AuthScreen({ onBack, onAuthSuccess }) {
+  const insets = useSafeAreaInsets();
   const { isMobile, isTablet, isDesktop, width } = useResponsiveLayout();
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -84,7 +86,13 @@ export default function AuthScreen({ onBack, onAuthSuccess }) {
         style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            {
+              paddingTop: (insets.top > 0 ? insets.top : 20) + 16,
+              paddingBottom: (insets.bottom > 0 ? insets.bottom : 20) + 24,
+            },
+          ]}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >

@@ -5,12 +5,15 @@ import {
   Text,
   Image,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GradientButton from '../components/GradientButton';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen1({ onNext }) {
+  const insets = useSafeAreaInsets();
   const { isMobile, isTablet, isDesktop, width, height } = useResponsiveLayout();
 
   // Desktop & Laptop Split Layout (Screen width >= 900 and landscape)
@@ -83,46 +86,57 @@ export default function WelcomeScreen1({ onNext }) {
   }
 
   // Mobile & Portrait Tablet Layout
-  const heroHeight = Math.round(height * 0.58);
-  const bottomHeight = height - heroHeight;
-
   return (
     <View style={styles.container}>
       {/* Top Hero Section */}
-      <View style={[styles.heroSection, { height: heroHeight }]}>
+      <View
+        style={[
+          styles.heroSection,
+          {
+            paddingTop: insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36),
+          },
+        ]}
+      >
         <LinearGradient
-          colors={['#0A83F3', '#1E5BBF', '#07080E']}
-          locations={[0, 0.55, 1]}
+          colors={['#0A83F3', '#1A67D9', '#0E285C', '#07080E']}
+          locations={[0, 0.4, 0.75, 1]}
           style={StyleSheet.absoluteFillObject}
         />
         <Image
-          source={require('../../Welcomepage.png')}
+          source={require('../../welcome_hero.png')}
           style={styles.heroImage}
           resizeMode="contain"
         />
         <LinearGradient
-          colors={['transparent', 'rgba(7, 8, 14, 0.6)', '#07080E']}
+          colors={['transparent', 'rgba(7, 8, 14, 0.7)', '#07080E']}
           locations={[0, 0.7, 1]}
           style={styles.bottomBlend}
         />
       </View>
 
       {/* Bottom Content Section */}
-      <View style={[styles.bottomSection, { height: bottomHeight }]}>
+      <View
+        style={[
+          styles.bottomSection,
+          {
+            paddingBottom: (insets.bottom > 0 ? insets.bottom : 16) + 12,
+          },
+        ]}
+      >
         <View style={styles.textContainer}>
-          <Text style={[styles.headingText, (isTablet || isDesktop) && styles.headingTextLarge]}>
+          <Text style={[styles.headingText, isTablet && styles.headingTextLarge]}>
             Welcome to Prompt Media
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             Where AI creativity comes to life.
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             Discover amazing creations, explore the prompts
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             behind them, and find inspiration for your next idea.
           </Text>
-          <Text style={[styles.taglineText, (isTablet || isDesktop) && styles.taglineTextLarge]}>
+          <Text style={[styles.taglineText, isTablet && styles.taglineTextLarge]}>
             Create. Share. Copy. Inspire.
           </Text>
         </View>
@@ -246,15 +260,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#07080E',
   },
   heroSection: {
+    flex: 1,
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   heroImage: {
-    width: '92%',
-    height: '92%',
+    width: '100%',
+    height: '100%',
   },
   bottomBlend: {
     position: 'absolute',
@@ -265,10 +280,11 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     width: '100%',
-    justifyContent: 'space-evenly',
+    flexShrink: 0,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 16,
+    paddingTop: 6,
     backgroundColor: '#07080E',
   },
   textContainer: {

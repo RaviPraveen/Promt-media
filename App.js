@@ -7,6 +7,7 @@ import {
   Platform,
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen1 from './src/screens/WelcomeScreen1';
 import WelcomeScreen2 from './src/screens/WelcomeScreen2';
 import AuthScreen from './src/screens/AuthScreen';
@@ -74,68 +75,67 @@ export default function App() {
   ];
 
   return (
-    <View style={styles.outerContainer}>
-      <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
-      <StatusBar barStyle="light-content" backgroundColor="#08090F" />
+    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#07080E' }}>
+      <View style={styles.outerContainer}>
+        <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
+        <StatusBar barStyle="light-content" backgroundColor="#08090F" />
 
-      {currentScreen === 'welcome' ? (
-        <View style={[styles.responsiveWrapper, { width: activeWidth }]}>
-          <FlatList
-            ref={flatListRef}
-            data={screens}
-            renderItem={({ item }) => (
-              <View style={{ width: activeWidth, height: '100%' }}>
-                {item.component}
-              </View>
-            )}
-            style={{ width: activeWidth, height: '100%' }}
-            contentContainerStyle={{ height: '100%' }}
-            keyExtractor={(item) => item.key}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            initialNumToRender={2}
-            getItemLayout={(data, index) => ({
-              length: activeWidth,
-              offset: activeWidth * index,
-              index,
-            })}
-          />
-        </View>
-      ) : (
-        <View style={styles.authWrapper}>
-          <AuthScreen
-            onBack={() => setCurrentScreen('welcome')}
-            onAuthSuccess={() => setCurrentScreen('welcome')}
-          />
-        </View>
-      )}
-    </View>
+        {currentScreen === 'welcome' ? (
+          <View style={[styles.responsiveWrapper, { width: activeWidth }]}>
+            <FlatList
+              ref={flatListRef}
+              data={screens}
+              renderItem={({ item }) => (
+                <View style={{ width: activeWidth, height: '100%' }}>
+                  {item.component}
+                </View>
+              )}
+              style={{ width: activeWidth, height: '100%' }}
+              contentContainerStyle={{ height: '100%' }}
+              keyExtractor={(item) => item.key}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              initialNumToRender={2}
+              getItemLayout={(data, index) => ({
+                length: activeWidth,
+                offset: activeWidth * index,
+                index,
+              })}
+            />
+          </View>
+        ) : (
+          <View style={styles.authWrapper}>
+            <AuthScreen
+              onBack={() => setCurrentScreen('welcome')}
+              onAuthSuccess={() => setCurrentScreen('welcome')}
+            />
+          </View>
+        )}
+      </View>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    height: '100%',
     width: '100%',
+    height: '100%',
     backgroundColor: '#07080E',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   responsiveWrapper: {
     flex: 1,
+    width: '100%',
     height: '100%',
     backgroundColor: '#07080E',
     overflow: 'hidden',
   },
   authWrapper: {
     flex: 1,
-    height: '100%',
     width: '100%',
+    height: '100%',
     backgroundColor: '#07080E',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

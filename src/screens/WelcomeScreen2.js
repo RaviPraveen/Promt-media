@@ -6,13 +6,16 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GradientButton from '../components/GradientButton';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen2({ onStart, onBack }) {
+  const insets = useSafeAreaInsets();
   const { isMobile, isTablet, isDesktop, width, height } = useResponsiveLayout();
 
   // Desktop & Laptop Split Layout (Screen width >= 900 and landscape)
@@ -92,17 +95,26 @@ export default function WelcomeScreen2({ onStart, onBack }) {
   }
 
   // Mobile & Portrait Tablet Layout
-  const heroHeight = Math.round(height * 0.58);
-  const bottomHeight = height - heroHeight;
-
   return (
     <View style={styles.container}>
       {/* Top Hero Section */}
-      <View style={[styles.heroSection, { height: heroHeight }]}>
+      <View
+        style={[
+          styles.heroSection,
+          {
+            paddingTop: insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36),
+          },
+        ]}
+      >
+        <LinearGradient
+          colors={['#4B98EE', '#2D81E4', '#1548A6', '#07080E']}
+          locations={[0, 0.4, 0.75, 1]}
+          style={StyleSheet.absoluteFillObject}
+        />
         <Image
-          source={require('../../welcomepagedestop.png')}
+          source={require('../../2ndwelcomepage.png')}
           style={styles.heroImage}
-          resizeMode="cover"
+          resizeMode="contain"
         />
 
         {/* Back navigation button overlay */}
@@ -110,35 +122,49 @@ export default function WelcomeScreen2({ onStart, onBack }) {
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={onBack}
-            style={styles.backButton}
+            style={[
+              styles.backButton,
+              {
+                top: (insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36)) + 8,
+              },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Back"
           >
             <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         )}
 
         <LinearGradient
-          colors={['transparent', 'rgba(7, 8, 14, 0.6)', '#07080E']}
+          colors={['transparent', 'rgba(7, 8, 14, 0.7)', '#07080E']}
           locations={[0, 0.7, 1]}
           style={styles.bottomBlend}
         />
       </View>
 
       {/* Bottom Content Section */}
-      <View style={[styles.bottomSection, { height: bottomHeight }]}>
+      <View
+        style={[
+          styles.bottomSection,
+          {
+            paddingBottom: (insets.bottom > 0 ? insets.bottom : 16) + 12,
+          },
+        ]}
+      >
         <View style={styles.textContainer}>
-          <Text style={[styles.headingText, (isTablet || isDesktop) && styles.headingTextLarge]}>
+          <Text style={[styles.headingText, isTablet && styles.headingTextLarge]}>
             Share Your Creativity
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             Post your AI-generated images with the prompts
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             behind them.
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             Get likes, gain followers, connect with other creators
           </Text>
-          <Text style={[styles.bodyText, (isTablet || isDesktop) && styles.bodyTextLarge]}>
+          <Text style={[styles.bodyText, isTablet && styles.bodyTextLarge]}>
             and inspire the community.
           </Text>
         </View>
@@ -274,6 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#07080E',
   },
   heroSection: {
+    flex: 1,
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
@@ -286,17 +313,21 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: Platform.OS === 'android' ? 24 : 44,
     left: 20,
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(20, 22, 32, 0.65)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(10, 15, 25, 0.65)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 20,
+    zIndex: 30,
+    elevation: 5,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
   },
   bottomBlend: {
     position: 'absolute',
@@ -307,10 +338,11 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     width: '100%',
-    justifyContent: 'space-evenly',
+    flexShrink: 0,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 16,
+    paddingTop: 6,
     backgroundColor: '#07080E',
   },
   textContainer: {
