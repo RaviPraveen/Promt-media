@@ -4,7 +4,7 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
+  Pressable,
   Platform,
   StatusBar,
 } from 'react-native';
@@ -12,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GradientButton from '../components/GradientButton';
+import PageIndicator from '../components/PageIndicator';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen2({ onStart, onBack }) {
@@ -44,14 +45,18 @@ export default function WelcomeScreen2({ onStart, onBack }) {
         <View style={styles.desktopRightPanel}>
           {/* Desktop Back Navigation Button */}
           {onBack && (
-            <TouchableOpacity
-              activeOpacity={0.75}
+            <Pressable
               onPress={onBack}
-              style={styles.desktopBackButton}
+              accessibilityRole="button"
+              accessibilityLabel="Back"
+              style={({ pressed }) => [
+                styles.desktopBackButton,
+                pressed && styles.pressedState,
+              ]}
             >
               <Ionicons name="arrow-back" size={18} color="#FFFFFF" />
               <Text style={styles.desktopBackText}>Back</Text>
-            </TouchableOpacity>
+            </Pressable>
           )}
 
           <View style={styles.desktopContentWrapper}>
@@ -80,10 +85,13 @@ export default function WelcomeScreen2({ onStart, onBack }) {
               </Text>
             </View>
 
+            {/* Real Coded Page Indicator */}
+            <PageIndicator totalPages={2} activeIndex={1} onDotPress={onBack} />
+
             {/* Interactive Primary Button */}
             <View style={styles.desktopButtonWrapper}>
               <GradientButton
-                title="Next"
+                title="Let's Start"
                 onPress={onStart}
                 minWidth={280}
               />
@@ -95,62 +103,54 @@ export default function WelcomeScreen2({ onStart, onBack }) {
   }
 
   // Mobile & Portrait Tablet Layout
+  const topInset = insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36);
+  const bottomInset = insets.bottom > 0 ? insets.bottom : 16;
+
   return (
     <View style={styles.container}>
-      {/* Top Hero Section */}
-      <View
-        style={[
-          styles.heroSection,
-          {
-            paddingTop: insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36),
-          },
-        ]}
-      >
+      {/* Top Hero Section: Sky Gradient + 2ndwelcomepage.png artwork + Back button */}
+      <View style={[styles.heroSection, { paddingTop: topInset + 8 }]}>
         <LinearGradient
-          colors={['#4B98EE', '#2D81E4', '#1548A6', '#07080E']}
+          colors={['#3A8EF6', '#2575DC', '#1248A8', '#07080E']}
           locations={[0, 0.4, 0.75, 1]}
           style={StyleSheet.absoluteFillObject}
         />
-        <Image
-          source={require('../../2ndwelcomepage.png')}
-          style={styles.heroImage}
-          resizeMode="contain"
-        />
 
-        {/* Back navigation button overlay */}
+        {/* Back navigation button */}
         {onBack && (
-          <TouchableOpacity
-            activeOpacity={0.7}
+          <Pressable
             onPress={onBack}
-            style={[
-              styles.backButton,
-              {
-                top: (insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36)) + 8,
-              },
-            ]}
             accessibilityRole="button"
             accessibilityLabel="Back"
+            style={({ pressed }) => [
+              styles.backButton,
+              { top: topInset + 8 },
+              pressed && styles.pressedState,
+            ]}
           >
             <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
+          </Pressable>
         )}
 
+        {/* Artwork Image Component: 2ndwelcomepage.png */}
+        <View style={styles.mobileArtworkWrapper}>
+          <Image
+            source={require('../../2ndwelcomepage.png')}
+            style={styles.mobileArtworkImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Smooth gradient blend into the dark bottom */}
         <LinearGradient
-          colors={['transparent', 'rgba(7, 8, 14, 0.7)', '#07080E']}
+          colors={['transparent', 'rgba(7, 8, 14, 0.8)', '#07080E']}
           locations={[0, 0.7, 1]}
           style={styles.bottomBlend}
         />
       </View>
 
-      {/* Bottom Content Section */}
-      <View
-        style={[
-          styles.bottomSection,
-          {
-            paddingBottom: (insets.bottom > 0 ? insets.bottom : 16) + 12,
-          },
-        ]}
-      >
+      {/* Bottom Content Section: Real Text + PageIndicator + Action Button */}
+      <View style={[styles.bottomSection, { paddingBottom: bottomInset + 12 }]}>
         <View style={styles.textContainer}>
           <Text style={[styles.headingText, isTablet && styles.headingTextLarge]}>
             Share Your Creativity
@@ -169,6 +169,10 @@ export default function WelcomeScreen2({ onStart, onBack }) {
           </Text>
         </View>
 
+        {/* Real Coded Page Indicator */}
+        <PageIndicator totalPages={2} activeIndex={1} onDotPress={onBack} />
+
+        {/* Real Coded Pressable Action Button */}
         <View style={styles.buttonContainer}>
           <GradientButton
             title="Let's Start"
@@ -232,7 +236,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.15)',
-    cursor: 'pointer',
     zIndex: 10,
   },
   desktopBackText: {
@@ -246,7 +249,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 40,
-    height: '82%',
+    height: '84%',
   },
   displayTitleWrapper: {
     alignItems: 'center',
@@ -257,7 +260,11 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 1.5,
     textAlign: 'center',
-    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
   },
   displayTitleBrand: {
     color: '#FFFFFF',
@@ -266,11 +273,15 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginTop: 4,
     textAlign: 'center',
-    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
   },
   desktopTextBody: {
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: 20,
   },
   desktopBodyHeading: {
     color: '#FFFFFF',
@@ -307,8 +318,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroImage: {
+  mobileArtworkWrapper: {
+    flex: 1,
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mobileArtworkImage: {
+    width: '92%',
     height: '100%',
   },
   backButton: {
@@ -329,12 +346,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 4,
   },
+  pressedState: {
+    opacity: 0.75,
+    transform: [{ scale: 0.96 }],
+  },
   bottomBlend: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: -1,
-    height: 70,
+    height: 60,
   },
   bottomSection: {
     width: '100%',
@@ -342,7 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 6,
+    paddingTop: 4,
     backgroundColor: '#07080E',
   },
   textContainer: {

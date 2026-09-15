@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GradientButton from '../components/GradientButton';
+import PageIndicator from '../components/PageIndicator';
 import { useResponsiveLayout } from '../constants/responsive';
 
 export default function WelcomeScreen1({ onNext }) {
@@ -71,6 +72,9 @@ export default function WelcomeScreen1({ onNext }) {
               </Text>
             </View>
 
+            {/* Real Coded Page Indicator */}
+            <PageIndicator totalPages={2} activeIndex={0} onDotPress={onNext} />
+
             {/* Interactive Primary Button */}
             <View style={styles.desktopButtonWrapper}>
               <GradientButton
@@ -86,43 +90,51 @@ export default function WelcomeScreen1({ onNext }) {
   }
 
   // Mobile & Portrait Tablet Layout
+  const topInset = insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36);
+  const bottomInset = insets.bottom > 0 ? insets.bottom : 16;
+
   return (
     <View style={styles.container}>
-      {/* Top Hero Section */}
-      <View
-        style={[
-          styles.heroSection,
-          {
-            paddingTop: insets.top > 0 ? insets.top : (Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 36),
-          },
-        ]}
-      >
+      {/* Top Hero Section: Sky Gradient + Logo + Display Title + Artwork */}
+      <View style={[styles.heroSection, { paddingTop: topInset + 8 }]}>
         <LinearGradient
-          colors={['#0A83F3', '#1A67D9', '#0E285C', '#07080E']}
+          colors={['#0A83F3', '#1662D6', '#0E285C', '#07080E']}
           locations={[0, 0.4, 0.75, 1]}
           style={StyleSheet.absoluteFillObject}
         />
-        <Image
-          source={require('../../welcome_hero.png')}
-          style={styles.heroImage}
-          resizeMode="contain"
-        />
+
+        {/* Top Header Bar: Logo + Real Display Title */}
+        <View style={styles.mobileTopHeader}>
+          <Image
+            source={require('../../logo.png')}
+            style={styles.mobileLogo}
+            resizeMode="contain"
+          />
+          <View style={styles.mobileTitleBlock}>
+            <Text style={styles.mobileTitleTop}>Welcome to</Text>
+            <Text style={styles.mobileTitleBrand}>Promt Media</Text>
+          </View>
+        </View>
+
+        {/* Center Artwork: Welcomepage.png */}
+        <View style={styles.mobileArtworkWrapper}>
+          <Image
+            source={require('../../Welcomepage.png')}
+            style={styles.mobileArtworkImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Smooth gradient blend into the dark bottom */}
         <LinearGradient
-          colors={['transparent', 'rgba(7, 8, 14, 0.7)', '#07080E']}
+          colors={['transparent', 'rgba(7, 8, 14, 0.8)', '#07080E']}
           locations={[0, 0.7, 1]}
           style={styles.bottomBlend}
         />
       </View>
 
-      {/* Bottom Content Section */}
-      <View
-        style={[
-          styles.bottomSection,
-          {
-            paddingBottom: (insets.bottom > 0 ? insets.bottom : 16) + 12,
-          },
-        ]}
-      >
+      {/* Bottom Content Section: Real Text + PageIndicator + Next Button */}
+      <View style={[styles.bottomSection, { paddingBottom: bottomInset + 12 }]}>
         <View style={styles.textContainer}>
           <Text style={[styles.headingText, isTablet && styles.headingTextLarge]}>
             Welcome to Prompt Media
@@ -141,6 +153,10 @@ export default function WelcomeScreen1({ onNext }) {
           </Text>
         </View>
 
+        {/* Real Coded Page Indicator */}
+        <PageIndicator totalPages={2} activeIndex={0} onDotPress={onNext} />
+
+        {/* Real Coded Pressable Next Button */}
         <View style={styles.buttonContainer}>
           <GradientButton
             title="Next"
@@ -198,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 40,
-    height: '82%',
+    height: '84%',
   },
   displayTitleWrapper: {
     alignItems: 'center',
@@ -209,7 +225,11 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 1.5,
     textAlign: 'center',
-    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
   },
   displayTitleBrand: {
     color: '#FFFFFF',
@@ -218,11 +238,15 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginTop: 4,
     textAlign: 'center',
-    fontFamily: Platform.OS === 'web' ? "'Cinzel Decorative', 'Playfair Display', Georgia, serif" : undefined,
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
   },
   desktopTextBody: {
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: 20,
   },
   desktopBodyHeading: {
     color: '#FFFFFF',
@@ -265,10 +289,65 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
-  heroImage: {
+  mobileTopHeader: {
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    zIndex: 10,
+  },
+  mobileLogo: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+  },
+  mobileTitleBlock: {
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 38, // Balance logo on left so text is centered
+  },
+  mobileTitleTop: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    textAlign: 'center',
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
+    textShadowColor: 'rgba(0, 0, 0, 0.45)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  mobileTitleBrand: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: '900',
+    letterSpacing: 1.6,
+    marginTop: 1,
+    textAlign: 'center',
+    fontFamily: Platform.select({
+      ios: 'Georgia',
+      android: 'serif',
+      web: "'Cinzel Decorative', 'Playfair Display', Georgia, serif",
+    }),
+    textShadowColor: 'rgba(0, 0, 0, 0.45)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  mobileArtworkWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 4,
+  },
+  mobileArtworkImage: {
+    width: '92%',
     height: '100%',
   },
   bottomBlend: {
@@ -276,7 +355,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: -1,
-    height: 70,
+    height: 60,
   },
   bottomSection: {
     width: '100%',
@@ -284,7 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 6,
+    paddingTop: 4,
     backgroundColor: '#07080E',
   },
   textContainer: {
