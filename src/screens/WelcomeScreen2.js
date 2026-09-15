@@ -23,10 +23,12 @@ export default function WelcomeScreen2({ onStart, onBack }) {
   const isLandscapeWide = width >= 900 && width > height;
 
   if (isLandscapeWide) {
+    const desktopHeight = height > 0 ? height : '100vh';
+
     return (
-      <View style={styles.desktopContainer}>
+      <View style={[styles.desktopContainer, { height: desktopHeight, minHeight: desktopHeight }]}>
         {/* Left 50% Panel: Floral Artwork using welcomepagedestop.png */}
-        <View style={styles.desktopLeftPanel}>
+        <View style={[styles.desktopLeftPanel, { height: desktopHeight, minHeight: desktopHeight }]}>
           <Image
             source={require('../../welcomepagedestop.png')}
             style={styles.desktopHeroImage}
@@ -34,15 +36,15 @@ export default function WelcomeScreen2({ onStart, onBack }) {
           />
           {/* Subtle right gradient blend into the dark right panel */}
           <LinearGradient
-            colors={['transparent', 'rgba(7, 8, 14, 0.45)', '#07080E']}
-            start={{ x: 0.65, y: 0.5 }}
+            colors={['transparent', 'rgba(7, 8, 14, 0.5)', '#07080E']}
+            start={{ x: 0.6, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.desktopRightBlend}
           />
         </View>
 
         {/* Right 50% Panel: Real Text & Interactive Button */}
-        <View style={styles.desktopRightPanel}>
+        <View style={[styles.desktopRightPanel, { height: desktopHeight, minHeight: desktopHeight }]}>
           {/* Desktop Back Navigation Button */}
           {onBack && (
             <Pressable
@@ -78,22 +80,19 @@ export default function WelcomeScreen2({ onStart, onBack }) {
                 behind them.
               </Text>
               <Text style={styles.desktopBodyLine}>
-                Get likes, gain followers, connect with other creators
+                Get likes, gain followers, connect with other
               </Text>
               <Text style={styles.desktopBodyLine}>
-                and inspire the community.
+                creators and inspire the community.
               </Text>
             </View>
-
-            {/* Real Coded Page Indicator */}
-            <PageIndicator totalPages={2} activeIndex={1} onDotPress={onBack} />
 
             {/* Interactive Primary Button */}
             <View style={styles.desktopButtonWrapper}>
               <GradientButton
-                title="Let's Start"
+                title="Next"
                 onPress={onStart}
-                minWidth={280}
+                minWidth={360}
               />
             </View>
           </View>
@@ -188,16 +187,13 @@ export default function WelcomeScreen2({ onStart, onBack }) {
 const styles = StyleSheet.create({
   // Desktop & Laptop Layout Styles
   desktopContainer: {
-    flex: 1,
     width: '100%',
-    height: '100%',
     flexDirection: 'row',
     backgroundColor: '#07080E',
     overflow: 'hidden',
   },
   desktopLeftPanel: {
     width: '50%',
-    height: '100%',
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
@@ -212,11 +208,10 @@ const styles = StyleSheet.create({
     right: -1,
     top: 0,
     bottom: 0,
-    width: 140,
+    width: 160,
   },
   desktopRightPanel: {
     width: '50%',
-    height: '100%',
     backgroundColor: '#07080E',
     alignItems: 'center',
     justifyContent: 'center',
@@ -225,11 +220,11 @@ const styles = StyleSheet.create({
   },
   desktopBackButton: {
     position: 'absolute',
-    top: 32,
-    left: 48,
+    top: 36,
+    left: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -240,25 +235,25 @@ const styles = StyleSheet.create({
   },
   desktopBackText: {
     color: '#FFFFFF',
-    fontSize: 13.5,
+    fontSize: 14,
     fontWeight: '600',
   },
   desktopContentWrapper: {
     width: '100%',
-    maxWidth: 580,
+    maxWidth: 680,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 40,
-    height: '84%',
+    justifyContent: 'center',
+    paddingVertical: 32,
   },
   displayTitleWrapper: {
     alignItems: 'center',
+    marginBottom: 8,
   },
   displayTitleTop: {
     color: '#FFFFFF',
-    fontSize: 44,
-    fontWeight: '800',
-    letterSpacing: 1.5,
+    fontSize: 54,
+    fontWeight: '700',
+    letterSpacing: 2,
     textAlign: 'center',
     fontFamily: Platform.select({
       ios: 'Georgia',
@@ -268,10 +263,10 @@ const styles = StyleSheet.create({
   },
   displayTitleBrand: {
     color: '#FFFFFF',
-    fontSize: 52,
+    fontSize: 66,
     fontWeight: '900',
-    letterSpacing: 2,
-    marginTop: 4,
+    letterSpacing: 2.5,
+    marginTop: 6,
     textAlign: 'center',
     fontFamily: Platform.select({
       ios: 'Georgia',
@@ -281,20 +276,20 @@ const styles = StyleSheet.create({
   },
   desktopTextBody: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 36,
   },
   desktopBodyHeading: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
     letterSpacing: 0.3,
   },
   desktopBodyLine: {
     color: '#D1D5DB',
-    fontSize: 16.5,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 28,
     textAlign: 'center',
     fontWeight: '400',
   },

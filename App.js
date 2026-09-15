@@ -33,7 +33,7 @@ export default function App() {
     setCurrentScreen('auth');
   };
 
-  // Inject Google Fonts for web
+  // Inject Google Fonts and full-height styles for web
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
       const fontId = 'prompt-media-google-fonts';
@@ -44,6 +44,24 @@ export default function App() {
         link.href =
           'https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap';
         document.head.appendChild(link);
+      }
+
+      const styleId = 'prompt-media-fullheight-css';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `
+          html, body, #root {
+            height: 100% !important;
+            min-height: 100% !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #07080E !important;
+            overflow: hidden !important;
+          }
+        `;
+        document.head.appendChild(style);
       }
     }
   }, []);
@@ -75,23 +93,23 @@ export default function App() {
   ];
 
   return (
-    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#07080E' }}>
-      <View style={styles.outerContainer}>
+    <SafeAreaProvider style={styles.safeArea}>
+      <View style={[styles.outerContainer, { width: activeWidth, height }]}>
         <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
         <StatusBar barStyle="light-content" backgroundColor="#08090F" />
 
         {currentScreen === 'welcome' ? (
-          <View style={[styles.responsiveWrapper, { width: activeWidth }]}>
+          <View style={[styles.responsiveWrapper, { width: activeWidth, height }]}>
             <FlatList
               ref={flatListRef}
               data={screens}
               renderItem={({ item }) => (
-                <View style={{ width: activeWidth, height: '100%' }}>
+                <View style={{ width: activeWidth, height, minHeight: height }}>
                   {item.component}
                 </View>
               )}
-              style={{ width: activeWidth, height: '100%' }}
-              contentContainerStyle={{ height: '100%' }}
+              style={{ width: activeWidth, height }}
+              contentContainerStyle={{ height, minHeight: height }}
               keyExtractor={(item) => item.key}
               horizontal
               pagingEnabled
@@ -106,7 +124,7 @@ export default function App() {
             />
           </View>
         ) : (
-          <View style={styles.authWrapper}>
+          <View style={[styles.authWrapper, { width: activeWidth, height }]}>
             <AuthScreen
               onBack={() => setCurrentScreen('welcome')}
               onAuthSuccess={() => setCurrentScreen('welcome')}
@@ -119,6 +137,12 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#07080E',
+  },
   outerContainer: {
     flex: 1,
     width: '100%',
